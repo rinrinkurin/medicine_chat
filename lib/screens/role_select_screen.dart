@@ -55,25 +55,27 @@ class _RoleSelectScreenState extends State<RoleSelectScreen> {
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 1.05,
+                child: GridView.builder(
+                  itemCount: _roles.length,
                   physics: const NeverScrollableScrollPhysics(),
-                  children: _roles
-                      .map(
-                        (role) => RoleCard(
-                          option: role,
-                          selected: _selectedRole == role.label,
-                          onTap: () {
-                            setState(() {
-                              _selectedRole = role.label;
-                            });
-                          },
-                        ),
-                      )
-                      .toList(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    mainAxisExtent: 140,
+                  ),
+                  itemBuilder: (context, index) {
+                    final role = _roles[index];
+                    return RoleCard(
+                      option: role,
+                      selected: _selectedRole == role.label,
+                      onTap: () {
+                        setState(() {
+                          _selectedRole = role.label;
+                        });
+                      },
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 12),

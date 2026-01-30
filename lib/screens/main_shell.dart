@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../state/app_state.dart';
 import '../theme/app_theme.dart';
 import 'calendar_screen.dart';
 import 'chat_screen.dart';
@@ -29,6 +30,9 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
+    if (AppState.instance.name.isEmpty) {
+      AppState.instance.setProfile(name: widget.name);
+    }
     final screens = [
       HomeScreen(
         name: widget.name,

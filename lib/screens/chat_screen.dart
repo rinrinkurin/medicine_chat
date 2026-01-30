@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../theme/app_theme.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   final String name;
   final String role;
   final String userId;
@@ -13,6 +16,186 @@ class ChatScreen extends StatelessWidget {
     required this.role,
     required this.userId,
   });
+
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  final ImagePicker _picker = ImagePicker();
+  XFile? _capturedPhoto;
+  final TextEditingController _textController = TextEditingController();
+  final List<_ChatMessage> _messages = [];
+  final List<_StickerItem> _stickers = const [
+    _StickerItem(
+        label: 'のんだよ！', icon: Icons.favorite, color: Color(0xFFFFC4D6)),
+    _StickerItem(
+        label: 'はなまる！', icon: Icons.verified, color: Color(0xFFFFD36A)),
+    _StickerItem(
+        label: 'おやす！', icon: Icons.nightlight_round, color: Color(0xFFB9E3FF)),
+    _StickerItem(
+        label: 'ごほうび', icon: Icons.emoji_emotions, color: Color(0xFFFFE3A1)),
+    _StickerItem(
+        label: 'じかんだよ', icon: Icons.access_time, color: Color(0xFFCDECCF)),
+    _StickerItem(
+        label: 'おだいじに', icon: Icons.favorite_border, color: Color(0xFFFFB3B3)),
+  ];
+
+  String get _todayLabel {
+    final now = DateTime.now();
+    final month = now.month.toString().padLeft(2, '0');
+    final day = now.day.toString().padLeft(2, '0');
+    return '${now.year}/$month/$day';
+  }
+
+  Future<void> _capturePhoto() async {
+    final file = await _picker.pickImage(source: ImageSource.camera);
+    if (file == null) return;
+    setState(() {
+      _capturedPhoto = file;
+    });
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  void _openStickerPicker() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: const Color(0xFFFDFEFD),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'スタンプ',
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),
+              ),
+              const SizedBox(height: 12),
+              GridView.count(
+                shrinkWrap: true,
+                crossAxisCount: 3,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                physics: const NeverScrollableScrollPhysics(),
+                children: _stickers
+                    .map(
+                      (sticker) => InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                          setState(() {
+                            _messages.insert(
+                              0,
+                              _ChatMessage(
+                                text: sticker.label,
+                                imagePath: null,
+                                dateLabel: _todayLabel,
+                                isMe: true,
+                                isSticker: true,
+                                stickerIcon: sticker.icon,
+                              ),
+                            );
+                          });
+                        },
+                        borderRadius: BorderRadius.circular(18),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(color: const Color(0xFFE6EAE6)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 12,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 80,
+                                height: 80,
+                                decoration: BoxDecoration(
+                                  color: sticker.color.withOpacity(0.4),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(sticker.icon,
+                                    color: kTextDark, size: 36),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                sticker.label,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  color: kTextMuted,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _sendTakenMessage() async {
+    if (_capturedPhoto == null) {
+      await _capturePhoto();
+    }
+    if (_capturedPhoto == null) return;
+    setState(() {
+      _messages.insert(
+        0,
+        _ChatMessage(
+          text: '飲んだよ！',
+          imagePath: _capturedPhoto!.path,
+          dateLabel: _todayLabel,
+          isMe: true,
+          isSticker: false,
+          stickerIcon: null,
+        ),
+      );
+    });
+  }
+
+  void _sendTextMessage() {
+    final text = _textController.text.trim();
+    if (text.isEmpty) return;
+    setState(() {
+      _messages.insert(
+        0,
+        _ChatMessage(
+          text: text,
+          imagePath: null,
+          dateLabel: _todayLabel,
+          isMe: true,
+          isSticker: false,
+          stickerIcon: null,
+        ),
+      );
+      _textController.clear();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +224,7 @@ class ChatScreen extends StatelessWidget {
                         'お薬チャット',
                         style: TextStyle(
                           color: kTextDark,
-                          fontSize: 16,
+                          fontSize: 26,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -59,26 +242,56 @@ class ChatScreen extends StatelessWidget {
                           const SizedBox(width: 6),
                           const Text(
                             '未接続',
-                            style: TextStyle(color: kTextMuted, fontSize: 11),
+                            style: TextStyle(color: kTextMuted, fontSize: 18),
                           ),
                         ],
                       ),
                     ],
                   ),
                 ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE6F7EE),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: const Text(
-                    '接続設定',
-                    style: TextStyle(
-                      color: kPrimary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
+                InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () {
+                    final controller = TextEditingController();
+                    showDialog<void>(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('接続設定'),
+                          content: TextField(
+                            controller: controller,
+                            decoration: const InputDecoration(
+                              hintText: '相手のIDを入力',
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('キャンセル'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('接続する'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE6F7EE),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Text(
+                      '接続設定',
+                      style: TextStyle(
+                        color: kPrimary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),
@@ -122,6 +335,7 @@ class ChatScreen extends StatelessWidget {
                                 style: TextStyle(
                                   color: kTextDark,
                                   fontWeight: FontWeight.w600,
+                                  fontSize: 18,
                                 ),
                               ),
                               SizedBox(height: 4),
@@ -129,25 +343,29 @@ class ChatScreen extends StatelessWidget {
                                 'まだ飲んでいません',
                                 style: TextStyle(
                                   color: Color(0xFFF03B57),
-                                  fontSize: 12,
+                                  fontSize: 18,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF03B57),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const Text(
-                            '飲んだよ！',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
+                        InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: _sendTakenMessage,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF03B57),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const Text(
+                              '飲んだよ！',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
@@ -164,11 +382,107 @@ class ChatScreen extends StatelessWidget {
                       border: Border.all(color: const Color(0xFFE8EBE8)),
                     ),
                     child: Text(
-                      '$nameさん、接続されました！',
-                      style: const TextStyle(color: kTextMuted, fontSize: 11),
+                      '${widget.name}さん、接続されました！',
+                      style: const TextStyle(color: kTextMuted, fontSize: 18),
                     ),
                   ),
-                  const Spacer(),
+                  const SizedBox(height: 8),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE6F7EE),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.camera_alt, color: kPrimary, size: 16),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            '写真を添えて「飲んだよ！」を送ってね',
+                            style: TextStyle(
+                              color: kPrimary,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (_capturedPhoto != null) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: const Color(0xFFE8EBE8)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '飲んだよ！',
+                            style: TextStyle(
+                              color: kTextDark,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Stack(
+                              children: [
+                                Image.file(
+                                  File(_capturedPhoto!.path),
+                                  width: double.infinity,
+                                  height: 180,
+                                  fit: BoxFit.cover,
+                                ),
+                                Positioned(
+                                  right: 8,
+                                  bottom: 8,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.6),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      _todayLabel,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      reverse: true,
+                      itemCount: _messages.length,
+                      itemBuilder: (context, index) {
+                        final message = _messages[index];
+                        return _MessageBubble(message: message);
+                      },
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Wrap(
@@ -187,51 +501,94 @@ class ChatScreen extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
                     child: Row(
                       children: [
-                        Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: const Color(0xFFE3E6E3)),
-                          ),
-                          child: const Icon(Icons.camera_alt,
-                              size: 18, color: kTextMuted),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
+                        InkWell(
+                          onTap: _capturePhoto,
+                          borderRadius: BorderRadius.circular(18),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 10),
+                            width: 36,
+                            height: 36,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(22),
+                              shape: BoxShape.circle,
                               border:
                                   Border.all(color: const Color(0xFFE3E6E3)),
                             ),
-                            child: const Text(
-                              'メッセージ...',
-                              style: TextStyle(color: kTextMuted, fontSize: 12),
+                            child: const Icon(Icons.camera_alt,
+                                size: 18, color: kTextMuted),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        InkWell(
+                          onTap: _openStickerPicker,
+                          borderRadius: BorderRadius.circular(18),
+                          child: Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              border:
+                                  Border.all(color: const Color(0xFFE3E6E3)),
+                            ),
+                            child: const Icon(Icons.emoji_emotions,
+                                size: 18, color: kTextMuted),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: TextField(
+                            controller: _textController,
+                            onSubmitted: (_) => _sendTextMessage(),
+                            decoration: InputDecoration(
+                              hintText: 'メッセージ...（撮影して送れます）',
+                              hintStyle: const TextStyle(
+                                  color: kTextMuted, fontSize: 18),
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 14),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(22),
+                                borderSide: const BorderSide(
+                                  color: Color(0xFFE3E6E3),
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(22),
+                                borderSide: const BorderSide(
+                                  color: Color(0xFFE3E6E3),
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(22),
+                                borderSide: const BorderSide(
+                                  color: kPrimary,
+                                ),
+                              ),
                             ),
                           ),
                         ),
                         const SizedBox(width: 10),
-                        Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: kPrimary,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: kPrimary.withOpacity(0.35),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
+                        InkWell(
+                          borderRadius: BorderRadius.circular(18),
+                          onTap: _sendTextMessage,
+                          child: Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: kPrimary,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: kPrimary.withOpacity(0.35),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(Icons.send,
+                                color: Colors.white, size: 18),
                           ),
-                          child: const Icon(Icons.send,
-                              color: Colors.white, size: 18),
                         ),
                       ],
                     ),
@@ -262,8 +619,139 @@ class _QuickChip extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: const TextStyle(color: kTextMuted, fontSize: 12),
+        style: const TextStyle(color: kTextMuted, fontSize: 18),
       ),
     );
   }
+}
+
+class _ChatMessage {
+  final String text;
+  final String? imagePath;
+  final String dateLabel;
+  final bool isMe;
+  final bool isSticker;
+  final IconData? stickerIcon;
+
+  _ChatMessage({
+    required this.text,
+    required this.imagePath,
+    required this.dateLabel,
+    required this.isMe,
+    required this.isSticker,
+    required this.stickerIcon,
+  });
+}
+
+class _MessageBubble extends StatelessWidget {
+  final _ChatMessage message;
+
+  const _MessageBubble({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    final alignment =
+        message.isMe ? Alignment.centerRight : Alignment.centerLeft;
+    final bubbleColor = message.isMe ? const Color(0xFFE9F7F0) : Colors.white;
+    return Align(
+      alignment: alignment,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: bubbleColor,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE8EBE8)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (message.isSticker && message.stickerIcon != null) ...[
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 136,
+                    height: 136,
+                    decoration: BoxDecoration(
+                      color: kPrimary.withOpacity(0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child:
+                        Icon(message.stickerIcon, color: kTextDark, size: 72),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    message.text,
+                    style: const TextStyle(
+                      color: kTextDark,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 24,
+                    ),
+                  ),
+                ],
+              ),
+            ] else ...[
+              Text(
+                message.text,
+                style: const TextStyle(
+                  color: kTextDark,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                ),
+              ),
+            ],
+            if (message.imagePath != null) ...[
+              const SizedBox(height: 8),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Stack(
+                  children: [
+                    Image.file(
+                      File(message.imagePath!),
+                      width: 260,
+                      height: 190,
+                      fit: BoxFit.cover,
+                    ),
+                    Positioned(
+                      right: 6,
+                      bottom: 6,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          message.dateLabel,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StickerItem {
+  final String label;
+  final IconData icon;
+  final Color color;
+
+  const _StickerItem({
+    required this.label,
+    required this.icon,
+    required this.color,
+  });
 }

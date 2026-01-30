@@ -21,6 +21,20 @@ class IdInputScreen extends StatefulWidget {
 
 class _IdInputScreenState extends State<IdInputScreen> {
   final TextEditingController _controller = TextEditingController();
+  final Set<String> _takenIds = {'rin', 'kurin', 'test'};
+
+  String? _validateId(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return null;
+    final isValid = RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(trimmed);
+    if (!isValid) {
+      return '半角英字・数字・_ で入力してください';
+    }
+    if (_takenIds.contains(trimmed.toLowerCase())) {
+      return 'そのIDはすでに使われています';
+    }
+    return null;
+  }
 
   @override
   void dispose() {
@@ -43,7 +57,8 @@ class _IdInputScreenState extends State<IdInputScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isEnabled = _controller.text.trim().isNotEmpty;
+    final errorText = _validateId(_controller.text);
+    final isEnabled = _controller.text.trim().isNotEmpty && errorText == null;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -66,6 +81,8 @@ class _IdInputScreenState extends State<IdInputScreen> {
                 onChanged: (_) => setState(() {}),
                 decoration: InputDecoration(
                   hintText: 'my-id',
+                  helperText: '半角英字・数字・_ で入力',
+                  errorText: errorText,
                   hintStyle: const TextStyle(color: Color(0xFFB3B9B3)),
                   prefixIcon: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),

@@ -45,24 +45,28 @@ class _NameInputScreenState extends State<NameInputScreen> {
           child: Column(
             children: [
               const AppHeader(),
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
               const Text(
                 'お名前を入力してください',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: kTextDark,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               TextField(
                 controller: _controller,
                 onChanged: (_) => setState(() {}),
+                textAlign: TextAlign.center,
                 decoration: InputDecoration(
+                  hintText: 'your name',
+                  hintStyle: const TextStyle(color: Color(0xFFB3B9B3)),
                   filled: true,
                   fillColor: Colors.white,
                   contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(32),
                     borderSide: const BorderSide(color: kPrimary, width: 1.5),
@@ -73,7 +77,7 @@ class _NameInputScreenState extends State<NameInputScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               PrimaryButton(
                 label: '次へすすむ',
                 onPressed: isEnabled ? _goNext : null,

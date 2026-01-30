@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
 
-class CalendarScreen extends StatelessWidget {
+class CalendarScreen extends StatefulWidget {
   final String name;
   final String role;
   final String userId;
@@ -15,7 +15,32 @@ class CalendarScreen extends StatelessWidget {
   });
 
   @override
+  State<CalendarScreen> createState() => _CalendarScreenState();
+}
+
+class _CalendarScreenState extends State<CalendarScreen> {
+  late DateTime _focusedMonth;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _focusedMonth = DateTime(now.year, now.month, 1);
+  }
+
+  void _moveMonth(int diff) {
+    setState(() {
+      _focusedMonth = DateTime(
+        _focusedMonth.year,
+        _focusedMonth.month + diff,
+        1,
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final monthLabel = '${_focusedMonth.year}年 ${_focusedMonth.month}月';
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
@@ -40,13 +65,13 @@ class CalendarScreen extends StatelessWidget {
               children: [
                 IconButton(
                   icon: const Icon(Icons.chevron_left),
-                  onPressed: () {},
+                  onPressed: () => _moveMonth(-1),
                 ),
-                const Expanded(
+                Expanded(
                   child: Center(
                     child: Text(
-                      '2026年 1月',
-                      style: TextStyle(
+                      monthLabel,
+                      style: const TextStyle(
                         color: kTextDark,
                         fontWeight: FontWeight.w600,
                       ),
@@ -55,12 +80,12 @@ class CalendarScreen extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.chevron_right),
-                  onPressed: () {},
+                  onPressed: () => _moveMonth(1),
                 ),
               ],
             ),
             const SizedBox(height: 8),
-            const _CalendarGrid(),
+            _CalendarGrid(focusedMonth: _focusedMonth),
             const SizedBox(height: 18),
             Container(
               padding: const EdgeInsets.all(16),
@@ -133,7 +158,7 @@ class _SummaryCard extends StatelessWidget {
             value,
             style: TextStyle(
               color: valueColor,
-              fontSize: 18,
+              fontSize: 24,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -144,14 +169,21 @@ class _SummaryCard extends StatelessWidget {
 }
 
 class _CalendarGrid extends StatelessWidget {
-  const _CalendarGrid();
+  final DateTime focusedMonth;
+
+  const _CalendarGrid({required this.focusedMonth});
 
   @override
   Widget build(BuildContext context) {
     const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+    final firstWeekday =
+        DateTime(focusedMonth.year, focusedMonth.month, 1).weekday;
+    final daysInMonth =
+        DateTime(focusedMonth.year, focusedMonth.month + 1, 0).day;
+    final offset = firstWeekday % 7;
     final days = List<int?>.generate(42, (index) {
-      final day = index - 2;
-      if (day < 1 || day > 31) return null;
+      final day = index - offset + 1;
+      if (day < 1 || day > daysInMonth) return null;
       return day;
     });
 
@@ -172,15 +204,15 @@ class _CalendarGrid extends StatelessWidget {
               )
               .toList(),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
         GridView.builder(
           itemCount: days.length,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 7,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 16,
             childAspectRatio: 1,
           ),
           itemBuilder: (context, index) {
@@ -222,7 +254,7 @@ class _CalendarDay extends StatelessWidget {
           '$day',
           style: TextStyle(
             color: isCompleted ? kPrimary : kTextMuted,
-            fontSize: 12,
+            fontSize: 16,
             fontWeight: isHighlighted ? FontWeight.w700 : FontWeight.w500,
           ),
         ),
