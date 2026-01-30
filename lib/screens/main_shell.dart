@@ -69,7 +69,8 @@ class _MainShellState extends State<MainShell> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'ホーム'),
           BottomNavigationBarItem(icon: Icon(Icons.chat_bubble), label: 'チャット'),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: '記録'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_month), label: '記録'),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: '設定'),
         ],
       ),
