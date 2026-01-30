@@ -84,13 +84,13 @@ class CalendarScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: _SummaryCard(
-                            title: '継続日数', value: '12日', valueColor: kPrimary),
+                            title: '継続日数', value: '0日', valueColor: kPrimary),
                       ),
                       const SizedBox(width: 12),
                       const Expanded(
                         child: _SummaryCard(
                             title: '達成率',
-                            value: '85%',
+                            value: '0%',
                             valueColor: Color(0xFF1A78FF)),
                       ),
                     ],
@@ -149,7 +149,7 @@ class _CalendarGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
-    final days = List<int?>.generate(35, (index) {
+    final days = List<int?>.generate(42, (index) {
       final day = index - 2;
       if (day < 1 || day > 31) return null;
       return day;
@@ -173,14 +173,19 @@ class _CalendarGrid extends StatelessWidget {
               .toList(),
         ),
         const SizedBox(height: 8),
-        Wrap(
-          spacing: 10,
-          runSpacing: 12,
-          children: days
-              .map(
-                (day) => _CalendarDay(day: day),
-              )
-              .toList(),
+        GridView.builder(
+          itemCount: days.length,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 7,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 12,
+            childAspectRatio: 1,
+          ),
+          itemBuilder: (context, index) {
+            return _CalendarDay(day: days[index]);
+          },
         ),
       ],
     );
@@ -198,8 +203,8 @@ class _CalendarDay extends StatelessWidget {
       return const SizedBox(width: 36, height: 36);
     }
 
-    final isCompleted = [5, 12, 18, 20, 26, 28, 29, 30].contains(day);
-    final isHighlighted = day == 30;
+    const isCompleted = false;
+    const isHighlighted = false;
 
     return Container(
       width: 36,
