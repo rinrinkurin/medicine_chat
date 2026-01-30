@@ -87,8 +87,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   const Text(
-                    'IDを共有して、親子や恋人同士で
-お薬の報告を受け取れるようにしましょう。',
+                    'IDを共有して、親子や恋人同士で\nお薬の報告を受け取れるようにしましょう。',
                     style: TextStyle(
                       color: Color(0xFFE6FFF1),
                       fontSize: 12,
@@ -97,7 +96,8 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 14),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
                       color: const Color(0xFF2CD989),
                       borderRadius: BorderRadius.circular(16),
@@ -114,7 +114,8 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(14),
@@ -160,7 +161,8 @@ class HomeScreen extends StatelessWidget {
                           color: const Color(0xFFFFF3DF),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.access_time, color: Color(0xFFFF9F1C)),
+                        child: const Icon(Icons.access_time,
+                            color: Color(0xFFFF9F1C)),
                       ),
                       const SizedBox(width: 12),
                       const Expanded(
@@ -299,7 +301,8 @@ class _ScheduleItem extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(dose, style: const TextStyle(color: kTextMuted, fontSize: 11)),
+                Text(dose,
+                    style: const TextStyle(color: kTextMuted, fontSize: 11)),
               ],
             ),
           ),
