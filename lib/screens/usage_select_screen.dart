@@ -5,7 +5,7 @@ import '../theme/app_theme.dart';
 import '../widgets/app_header.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/usage_card.dart';
-import 'chat_screen.dart';
+import 'main_shell.dart';
 
 class UsageSelectScreen extends StatefulWidget {
   final String role;
@@ -40,10 +40,16 @@ class _UsageSelectScreenState extends State<UsageSelectScreen> {
   ];
 
   void _start() {
+    final usageLabel = _options[_selectedIndex].title;
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ChatScreen(role: widget.role),
+        builder: (_) => MainShell(
+          name: widget.name,
+          role: widget.role,
+          userId: widget.userId,
+          usageLabel: usageLabel,
+        ),
       ),
     );
   }

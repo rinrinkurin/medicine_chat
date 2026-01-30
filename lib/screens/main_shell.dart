@@ -66,6 +66,7 @@ class _MainShellState extends State<MainShell> {
         selectedItemColor: kPrimary,
         unselectedItemColor: kTextMuted,
         showUnselectedLabels: true,
+        backgroundColor: Colors.white,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'ホーム'),
           BottomNavigationBarItem(icon: Icon(Icons.chat_bubble), label: 'チャット'),
