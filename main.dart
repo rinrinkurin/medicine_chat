@@ -116,14 +116,17 @@ class _ChatScreenState extends State<ChatScreen> {
             child: ListView.builder(
               itemCount: _messages.length,
               itemBuilder: (context, index) {
-                final message = _nadage[index];
+                final message = _messages[index];
                 return Align(
-                  alignment: message.isParent ? Alignment.topRight : Alignment.topLeft,
+                  alignment:
+                      message.isParent ? Alignment.topRight : Alignment.topLeft,
                   child: Container(
                     margin: EdgeInsets.symmetric(vertical: 8),
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: message.isParent ? Colors.blue.withOpacity(0.3) : Colors.green.withOpacity(0.3),
+                      color: message.isParent
+                          ? Colors.blue.withOpacity(0.3)
+                          : Colors.green.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(message.text),
