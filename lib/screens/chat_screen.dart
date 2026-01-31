@@ -28,17 +28,47 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<_ChatMessage> _messages = [];
   final List<_StickerItem> _stickers = const [
     _StickerItem(
-        label: 'のんだよ！', icon: Icons.favorite, color: Color(0xFFFFC4D6)),
+      label: '',
+      icon: Icons.favorite,
+      color: Color(0xFFFFC4D6),
+      assetPath: 'assets/stamps/のんだよ.png',
+    ),
     _StickerItem(
-        label: 'はなまる！', icon: Icons.verified, color: Color(0xFFFFD36A)),
+      label: '',
+      icon: Icons.verified,
+      color: Color(0xFFFFD36A),
+      assetPath: 'assets/stamps/はなまる.png',
+    ),
     _StickerItem(
-        label: 'おやす！', icon: Icons.nightlight_round, color: Color(0xFFB9E3FF)),
+      label: '',
+      icon: Icons.nightlight_round,
+      color: Color(0xFFB9E3FF),
+      assetPath: 'assets/stamps/おやすみ.png',
+    ),
     _StickerItem(
-        label: 'ごほうび', icon: Icons.emoji_emotions, color: Color(0xFFFFE3A1)),
+      label: '',
+      icon: Icons.emoji_emotions,
+      color: Color(0xFFFFE3A1),
+      assetPath: 'assets/stamps/ごほうび.png',
+    ),
     _StickerItem(
-        label: 'じかんだよ', icon: Icons.access_time, color: Color(0xFFCDECCF)),
+      label: '',
+      icon: Icons.access_time,
+      color: Color(0xFFCDECCF),
+      assetPath: 'assets/stamps/じかんだよ.png',
+    ),
     _StickerItem(
-        label: 'おだいじに', icon: Icons.favorite_border, color: Color(0xFFFFB3B3)),
+      label: '',
+      icon: Icons.favorite_border,
+      color: Color(0xFFFFB3B3),
+      assetPath: 'assets/stamps/おだいじに.png',
+    ),
+    _StickerItem(
+      label: '',
+      icon: Icons.help_outline,
+      color: Color(0xFFE3E6FF),
+      assetPath: 'assets/stamps/のんだ？.png',
+    ),
   ];
 
   String get _todayLabel {
@@ -102,6 +132,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 isMe: true,
                                 isSticker: true,
                                 stickerIcon: sticker.icon,
+                                stickerAssetPath: sticker.assetPath,
                               ),
                             );
                           });
@@ -132,18 +163,28 @@ class _ChatScreenState extends State<ChatScreen> {
                                   color: sticker.color.withOpacity(0.4),
                                   shape: BoxShape.circle,
                                 ),
-                                child: Icon(sticker.icon,
-                                    color: kTextDark, size: 36),
+                                child: sticker.assetPath != null
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(12),
+                                        child: Image.asset(
+                                          sticker.assetPath!,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      )
+                                    : Icon(sticker.icon,
+                                        color: kTextDark, size: 36),
                               ),
-                              const SizedBox(height: 10),
-                              Text(
-                                sticker.label,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  color: kTextMuted,
-                                  fontWeight: FontWeight.w600,
+                              if (sticker.label.trim().isNotEmpty) ...[
+                                const SizedBox(height: 10),
+                                Text(
+                                  sticker.label,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    color: kTextMuted,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                              ),
+                              ],
                             ],
                           ),
                         ),
@@ -173,6 +214,7 @@ class _ChatScreenState extends State<ChatScreen> {
           isMe: true,
           isSticker: false,
           stickerIcon: null,
+          stickerAssetPath: null,
         ),
       );
     });
@@ -191,6 +233,7 @@ class _ChatScreenState extends State<ChatScreen> {
           isMe: true,
           isSticker: false,
           stickerIcon: null,
+          stickerAssetPath: null,
         ),
       );
       _textController.clear();
@@ -632,6 +675,7 @@ class _ChatMessage {
   final bool isMe;
   final bool isSticker;
   final IconData? stickerIcon;
+  final String? stickerAssetPath;
 
   _ChatMessage({
     required this.text,
@@ -640,6 +684,7 @@ class _ChatMessage {
     required this.isMe,
     required this.isSticker,
     required this.stickerIcon,
+    required this.stickerAssetPath,
   });
 }
 
@@ -666,7 +711,7 @@ class _MessageBubble extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (message.isSticker && message.stickerIcon != null) ...[
+            if (message.isSticker) ...[
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -677,18 +722,31 @@ class _MessageBubble extends StatelessWidget {
                       color: kPrimary.withOpacity(0.15),
                       shape: BoxShape.circle,
                     ),
-                    child:
-                        Icon(message.stickerIcon, color: kTextDark, size: 72),
+                    child: message.stickerAssetPath != null
+                        ? Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Image.asset(
+                              message.stickerAssetPath!,
+                              fit: BoxFit.contain,
+                            ),
+                          )
+                        : Icon(
+                            message.stickerIcon ?? Icons.emoji_emotions,
+                            color: kTextDark,
+                            size: 72,
+                          ),
                   ),
-                  const SizedBox(width: 6),
-                  Text(
-                    message.text,
-                    style: const TextStyle(
-                      color: kTextDark,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 24,
+                  if (message.text.trim().isNotEmpty) ...[
+                    const SizedBox(width: 6),
+                    Text(
+                      message.text,
+                      style: const TextStyle(
+                        color: kTextDark,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 24,
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ] else ...[
@@ -748,10 +806,12 @@ class _StickerItem {
   final String label;
   final IconData icon;
   final Color color;
+  final String? assetPath;
 
   const _StickerItem({
     required this.label,
     required this.icon,
     required this.color,
+    this.assetPath,
   });
 }
