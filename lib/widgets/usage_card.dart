@@ -68,7 +68,7 @@ class UsageCard extends StatelessWidget {
                   Text(
                     option.subtitle,
                     style: const TextStyle(
-                      fontSize: 12,
+                      fontSize: kFontSmall,
                       color: kTextMuted,
                     ),
                   ),

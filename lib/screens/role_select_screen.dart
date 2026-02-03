@@ -49,7 +49,7 @@ class _RoleSelectScreenState extends State<RoleSelectScreen> {
                 'あなたの役割は？',
                 style: TextStyle(
                   color: kTextDark,
-                  fontSize: 16,
+                  fontSize: kFontBody,
                   fontWeight: FontWeight.w600,
                 ),
               ),

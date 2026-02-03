@@ -51,14 +51,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
               'お薬カレンダー',
               style: TextStyle(
                 color: kTextDark,
-                fontSize: 20,
+                fontSize: kFontTitle,
                 fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: 4),
             const Text(
               '日々の服用記録を確認しましょう',
-              style: TextStyle(color: kTextMuted, fontSize: 12),
+              style: TextStyle(color: kTextMuted, fontSize: kFontSmall),
             ),
             const SizedBox(height: 16),
             Row(
@@ -152,13 +152,14 @@ class _SummaryCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(title, style: const TextStyle(color: kTextMuted, fontSize: 12)),
+          Text(title,
+              style: const TextStyle(color: kTextMuted, fontSize: kFontSmall)),
           const SizedBox(height: 8),
           Text(
             value,
             style: TextStyle(
               color: valueColor,
-              fontSize: 24,
+              fontSize: kFontSection,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -198,7 +199,8 @@ class _CalendarGrid extends StatelessWidget {
                   child: Text(
                     label,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: kTextMuted, fontSize: 11),
+                    style: const TextStyle(
+                        color: kTextMuted, fontSize: kFontSmall),
                   ),
                 ),
               )
@@ -254,7 +256,7 @@ class _CalendarDay extends StatelessWidget {
           '$day',
           style: TextStyle(
             color: isCompleted ? kPrimary : kTextMuted,
-            fontSize: 16,
+            fontSize: kFontBody,
             fontWeight: isHighlighted ? FontWeight.w700 : FontWeight.w500,
           ),
         ),

@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
                           Text(
                             'こんにちは、$displayNameさん',
                             style: const TextStyle(
-                              fontSize: 22,
+                              fontSize: kFontTitle,
                               fontWeight: FontWeight.w700,
                               color: kTextDark,
                             ),
@@ -51,7 +51,7 @@ class HomeScreen extends StatelessWidget {
                             '今日もお薬を忘れずに飲みましょう',
                             style: TextStyle(
                               color: kTextMuted,
-                              fontSize: 13,
+                              fontSize: kFontSmall,
                             ),
                           ),
                         ],
@@ -108,7 +108,7 @@ class HomeScreen extends StatelessWidget {
                         'パートナーとつながる',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 17,
+                          fontSize: kFontBody,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -117,7 +117,7 @@ class HomeScreen extends StatelessWidget {
                         'IDを共有して、親子や恋人同士で\nお薬の報告を受け取れるようにしましょう。',
                         style: TextStyle(
                           color: Color(0xFFE6FFF1),
-                          fontSize: 13,
+                          fontSize: kFontSmall,
                           height: 1.4,
                         ),
                       ),
@@ -158,7 +158,7 @@ class HomeScreen extends StatelessWidget {
                                   'ID共有',
                                   style: TextStyle(
                                     color: kPrimary,
-                                    fontSize: 12,
+                                    fontSize: kFontSmall,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -207,7 +207,7 @@ class HomeScreen extends StatelessWidget {
                                 Text(
                                   '次の予定',
                                   style: TextStyle(
-                                      color: kTextMuted, fontSize: 12),
+                                      color: kTextMuted, fontSize: kFontSmall),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
@@ -221,7 +221,7 @@ class HomeScreen extends StatelessWidget {
                                 Text(
                                   '1錠 (錠剤)',
                                   style: TextStyle(
-                                      color: kTextMuted, fontSize: 12),
+                                      color: kTextMuted, fontSize: kFontSmall),
                                 ),
                               ],
                             ),
@@ -249,14 +249,14 @@ class HomeScreen extends StatelessWidget {
                   style: TextStyle(
                     color: kTextDark,
                     fontWeight: FontWeight.w700,
-                    fontSize: 16,
+                    fontSize: kFontBody,
                   ),
                 ),
                 const SizedBox(height: 12),
                 if (todayList.isEmpty)
                   const Text(
                     '今日は予定がありません',
-                    style: TextStyle(color: kTextMuted, fontSize: 13),
+                    style: TextStyle(color: kTextMuted, fontSize: kFontSmall),
                   )
                 else
                   ...todayList.map(
@@ -314,7 +314,8 @@ class _StatCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(title, style: const TextStyle(color: kTextMuted, fontSize: 12)),
+          Text(title,
+              style: const TextStyle(color: kTextMuted, fontSize: kFontSmall)),
           const SizedBox(height: 6),
           Text(
             value,
@@ -355,7 +356,7 @@ class _ScheduleItem extends StatelessWidget {
             width: 46,
             child: Text(
               time,
-              style: const TextStyle(color: kTextMuted, fontSize: 12),
+              style: const TextStyle(color: kTextMuted, fontSize: kFontSmall),
             ),
           ),
           const SizedBox(width: 8),
@@ -372,7 +373,8 @@ class _ScheduleItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(dose,
-                    style: const TextStyle(color: kTextMuted, fontSize: 11)),
+                    style: const TextStyle(
+                        color: kTextMuted, fontSize: kFontSmall)),
               ],
             ),
           ),

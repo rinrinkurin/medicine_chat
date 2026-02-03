@@ -30,7 +30,7 @@ class AppHeader extends StatelessWidget {
           'お薬チャット',
           style: TextStyle(
             color: kTextDark,
-            fontSize: 20,
+            fontSize: kFontTitle,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -39,7 +39,7 @@ class AppHeader extends StatelessWidget {
           'CONNECTING CARE',
           style: TextStyle(
             color: kTextMuted,
-            fontSize: 12,
+            fontSize: kFontSmall,
             letterSpacing: 2,
             fontWeight: FontWeight.w600,
           ),

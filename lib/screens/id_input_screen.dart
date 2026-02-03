@@ -71,7 +71,7 @@ class _IdInputScreenState extends State<IdInputScreen> {
                 '好きなIDを設定してください',
                 style: TextStyle(
                   color: kTextDark,
-                  fontSize: 16,
+                  fontSize: kFontBody,
                   fontWeight: FontWeight.w600,
                 ),
               ),

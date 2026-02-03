@@ -54,7 +54,7 @@ class RoleCard extends StatelessWidget {
             Text(
               option.label,
               style: const TextStyle(
-                fontSize: 14,
+                fontSize: kFontSmall,
                 fontWeight: FontWeight.w600,
                 color: kTextDark,
               ),

@@ -68,7 +68,7 @@ class _UsageSelectScreenState extends State<UsageSelectScreen> {
                 'アプリの使い方を選んでください',
                 style: TextStyle(
                   color: kTextDark,
-                  fontSize: 16,
+                  fontSize: kFontBody,
                   fontWeight: FontWeight.w600,
                 ),
               ),

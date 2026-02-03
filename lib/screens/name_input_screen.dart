@@ -51,7 +51,7 @@ class _NameInputScreenState extends State<NameInputScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: kTextDark,
-                  fontSize: 16,
+                  fontSize: kFontBody,
                   fontWeight: FontWeight.w600,
                 ),
               ),

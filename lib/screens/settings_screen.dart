@@ -192,14 +192,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               '設定',
               style: TextStyle(
                 color: kTextDark,
-                fontSize: 20,
+                fontSize: kFontTitle,
                 fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: 4),
             const Text(
               'プロフィールの管理',
-              style: TextStyle(color: kTextMuted, fontSize: 12),
+              style: TextStyle(color: kTextMuted, fontSize: kFontSmall),
             ),
             const SizedBox(height: 16),
             Container(
@@ -263,7 +263,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     if (AppState.instance.medications.isEmpty) {
                       return const Text(
                         'お薬が登録されていません',
-                        style: TextStyle(color: kTextMuted, fontSize: 12),
+                        style:
+                            TextStyle(color: kTextMuted, fontSize: kFontSmall),
                       );
                     }
                     return Column(
@@ -608,7 +609,8 @@ class _PrivacyRow extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     description,
-                    style: const TextStyle(color: kTextMuted, fontSize: 11),
+                    style: const TextStyle(
+                        color: kTextMuted, fontSize: kFontSmall),
                   ),
                 ],
               ),
@@ -654,7 +656,7 @@ class _TagChip extends StatelessWidget {
       child: Text(
         label,
         style: const TextStyle(
-            color: kPrimary, fontSize: 11, fontWeight: FontWeight.w600),
+            color: kPrimary, fontSize: kFontSmall, fontWeight: FontWeight.w600),
       ),
     );
   }
