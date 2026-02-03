@@ -95,104 +95,113 @@ class _ChatScreenState extends State<ChatScreen> {
   void _openStickerPicker() {
     showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
       backgroundColor: const Color(0xFFFDFEFD),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'スタンプ',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),
-              ),
-              const SizedBox(height: 12),
-              GridView.count(
-                shrinkWrap: true,
-                crossAxisCount: 3,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                physics: const NeverScrollableScrollPhysics(),
-                children: _stickers
-                    .map(
-                      (sticker) => InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          setState(() {
-                            _messages.insert(
-                              0,
-                              _ChatMessage(
-                                text: sticker.label,
-                                imagePath: null,
-                                dateLabel: _todayLabel,
-                                isMe: true,
-                                isSticker: true,
-                                stickerIcon: sticker.icon,
-                                stickerAssetPath: sticker.assetPath,
-                              ),
-                            );
-                          });
-                        },
-                        borderRadius: BorderRadius.circular(18),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(18),
-                            border: Border.all(color: const Color(0xFFE6EAE6)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.04),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 80,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                  color: sticker.color.withOpacity(0.4),
-                                  shape: BoxShape.circle,
+        return SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(
+              20,
+              16,
+              20,
+              24 + MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'スタンプ',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),
+                ),
+                const SizedBox(height: 12),
+                GridView.count(
+                  shrinkWrap: true,
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: _stickers
+                      .map(
+                        (sticker) => InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                            setState(() {
+                              _messages.insert(
+                                0,
+                                _ChatMessage(
+                                  text: sticker.label,
+                                  imagePath: null,
+                                  dateLabel: _todayLabel,
+                                  isMe: true,
+                                  isSticker: true,
+                                  stickerIcon: sticker.icon,
+                                  stickerAssetPath: sticker.assetPath,
                                 ),
-                                child: sticker.assetPath != null
-                                    ? Padding(
-                                        padding: const EdgeInsets.all(12),
-                                        child: Image.asset(
-                                          sticker.assetPath!,
-                                          fit: BoxFit.contain,
-                                        ),
-                                      )
-                                    : Icon(sticker.icon,
-                                        color: kTextDark, size: 36),
-                              ),
-                              if (sticker.label.trim().isNotEmpty) ...[
-                                const SizedBox(height: 10),
-                                Text(
-                                  sticker.label,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    color: kTextMuted,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                              );
+                            });
+                          },
+                          borderRadius: BorderRadius.circular(18),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(18),
+                              border:
+                                  Border.all(color: const Color(0xFFE6EAE6)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.04),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 6),
                                 ),
                               ],
-                            ],
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 120,
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    color: sticker.color.withOpacity(0.4),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: sticker.assetPath != null
+                                      ? Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Image.asset(
+                                            sticker.assetPath!,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        )
+                                      : Icon(sticker.icon,
+                                          color: kTextDark, size: 36),
+                                ),
+                                if (sticker.label.trim().isNotEmpty) ...[
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    sticker.label,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: kTextMuted,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ],
+                      )
+                      .toList(),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -237,6 +246,25 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       );
       _textController.clear();
+    });
+  }
+
+  void _sendQuickMessage(String text) {
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) return;
+    setState(() {
+      _messages.insert(
+        0,
+        _ChatMessage(
+          text: trimmed,
+          imagePath: null,
+          dateLabel: _todayLabel,
+          isMe: true,
+          isSticker: false,
+          stickerIcon: null,
+          stickerAssetPath: null,
+        ),
+      );
     });
   }
 
@@ -531,11 +559,23 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Wrap(
                       spacing: 8,
                       runSpacing: 8,
-                      children: const [
-                        _QuickChip(label: 'お薬飲んだ？'),
-                        _QuickChip(label: 'あとで飲むね'),
-                        _QuickChip(label: 'ありがとう！'),
-                        _QuickChip(label: 'お疲れ様！'),
+                      children: [
+                        _QuickChip(
+                          label: 'お薬飲んだ？',
+                          onTap: () => _sendQuickMessage('お薬飲んだ？'),
+                        ),
+                        _QuickChip(
+                          label: 'あとで飲むね',
+                          onTap: () => _sendQuickMessage('あとで飲むね'),
+                        ),
+                        _QuickChip(
+                          label: 'ありがとう！',
+                          onTap: () => _sendQuickMessage('ありがとう！'),
+                        ),
+                        _QuickChip(
+                          label: 'お疲れ様！',
+                          onTap: () => _sendQuickMessage('お疲れ様！'),
+                        ),
                       ],
                     ),
                   ),
@@ -648,21 +688,26 @@ class _ChatScreenState extends State<ChatScreen> {
 
 class _QuickChip extends StatelessWidget {
   final String label;
+  final VoidCallback? onTap;
 
-  const _QuickChip({required this.label});
+  const _QuickChip({required this.label, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE6E9E6)),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(color: kTextMuted, fontSize: 18),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0xFFE6E9E6)),
+        ),
+        child: Text(
+          label,
+          style: const TextStyle(color: kTextMuted, fontSize: 18),
+        ),
       ),
     );
   }
